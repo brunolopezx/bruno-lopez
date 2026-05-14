@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
-  { label: "Sobre mí", href: "sobre-mi" },
+  { label: "Sobre mí", href: "about" },
   { label: "Proyectos", href: "projects" },
   { label: "Skills", href: "skills" },
   { label: "Servicios", href: "services" },
-  { label: "Contacto", href: "contact" },
 ];
 
 function Navbar() {

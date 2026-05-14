@@ -4,11 +4,11 @@ function Footer() {
   };
 
   const navLinks = [
-    { label: "Sobre mi", href: "sobre-mi" },
-    { label: "Proyectos", href: "proyectos" },
+    { label: "Sobre mi", href: "about" },
+    { label: "Proyectos", href: "projects" },
     { label: "Skills", href: "skills" },
-    { label: "Servicios", href: "servicios" },
-    { label: "Contacto", href: "contacto" },
+    { label: "Servicios", href: "services" },
+    { label: "Contacto", href: "contact" },
   ];
 
   const contactLinks = [

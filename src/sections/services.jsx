@@ -45,7 +45,7 @@ const servicios = [
   },
   {
     id: "04",
-    title: "Dashboard / Panel",
+    title: "Dashboard",
     description:
       "Panel de administración o métricas para tu negocio. Gráficos, tablas y gestión de datos.",
     features: [
@@ -168,7 +168,7 @@ function Services({ onConsultar }) {
                     color: "#A78BFA",
                     background: "transparent",
                   }}
-                  onClick={() => onConsultar(s.id)}
+                  onClick={() => onConsultar(s.title)}
                   onMouseEnter={(e) => {
                     e.target.style.background = "#5B21B6";
                     e.target.style.color = "#F5F0E8";

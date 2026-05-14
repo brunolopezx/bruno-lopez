@@ -54,7 +54,7 @@ function About() {
 
   return (
     <section
-      id="sobre-mi"
+      id="about"
       ref={ref}
       className="py-28 px-6"
       style={{ background: "#0D0D0D" }}

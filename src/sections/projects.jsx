@@ -155,7 +155,7 @@ function ProjectCard({ project, index }) {
 
 function Projects() {
   return (
-    <section id="proyectos" className="py-28 px-6">
+    <section id="projects" className="py-28 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

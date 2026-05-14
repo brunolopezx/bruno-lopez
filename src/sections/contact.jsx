@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE_ID = "service_hohkacq";
+const EMAILJS_TEMPLATE_ID = "template_qy0pb1r";
+const EMAILJS_PUBLIC_KEY = "IMVHmtuxHosf40S9E";
 
 function Contact() {
   const {
@@ -8,12 +13,66 @@ function Contact() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
-  const [submitted, setSubmitted] = useState(false);
 
-  const onSubmit = (data) => {
-    setSubmitted(true);
-    reset();
+  const formRef = useRef(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(null);
+
+  // ==================== ESCUCHAR DATOS DEL BUDGET MODAL ====================
+  useEffect(() => {
+    const handleBudget = (e) => {
+      const { tipo, features, urgencia } = e.detail;
+
+      setValue("asunto", `Presupuesto: ${tipo}`);
+
+      let mensaje = `Hola Bruno,\n\nEstoy interesado en un proyecto de ${tipo}.\n\n`;
+
+      if (features && features.length > 0) {
+        mensaje += `Funcionalidades que necesito:\n`;
+        features.forEach((f) => {
+          mensaje += `• ${f}\n`;
+        });
+        mensaje += `\n`;
+      }
+
+      mensaje += `Urgencia: ${urgencia}\n\n`;
+      mensaje += `¿Podrías enviarme un presupuesto personalizado? Muchas gracias!`;
+
+      setValue("mensaje", mensaje);
+    };
+
+    window.addEventListener("budgetSelected", handleBudget);
+    return () => window.removeEventListener("budgetSelected", handleBudget);
+  }, [setValue]);
+
+  // ==================== ENVÍO CON EMAILJS ====================
+  const onSubmit = async (data) => {
+    setSending(true);
+    setError(null);
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: data.nombre,
+          from_email: data.email,
+          subject: data.asunto,
+          message: data.mensaje,
+        },
+        EMAILJS_PUBLIC_KEY,
+      );
+      setSubmitted(true);
+      reset();
+    } catch (err) {
+      console.error("EmailJS error:", err);
+      setError("Hubo un error al enviar el mensaje. Intentá de nuevo.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const inputStyle = (hasError) => ({
@@ -35,7 +94,7 @@ function Contact() {
     >
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Izquierda */}
+          {/* ====================== LADO IZQUIERDO ====================== */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -126,7 +185,7 @@ function Contact() {
             </div>
           </motion.div>
 
-          {/* Formulario */}
+          {/* ====================== FORMULARIO ====================== */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -166,6 +225,7 @@ function Contact() {
               </motion.div>
             ) : (
               <form
+                ref={formRef}
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col gap-4"
               >
@@ -194,6 +254,7 @@ function Contact() {
                       </p>
                     )}
                   </div>
+
                   <div>
                     <label
                       className="text-xs uppercase tracking-widest block mb-2"
@@ -261,8 +322,11 @@ function Contact() {
                   <textarea
                     {...register("mensaje", { required: "Requerido" })}
                     placeholder="Contame sobre tu proyecto..."
-                    rows={5}
-                    style={{ ...inputStyle(errors.mensaje), resize: "none" }}
+                    rows={8}
+                    style={{
+                      ...inputStyle(errors.mensaje),
+                      resize: "vertical",
+                    }}
                     onFocus={(e) => (e.target.style.borderColor = "#5B21B6")}
                     onBlur={(e) =>
                       (e.target.style.borderColor = errors.mensaje
@@ -277,14 +341,38 @@ function Contact() {
                   )}
                 </div>
 
+                {/* Error de envío */}
+                {error && (
+                  <p
+                    className="text-xs text-center py-2 px-4"
+                    style={{
+                      color: "#F87171",
+                      background: "rgba(248,113,113,0.08)",
+                      border: "1px solid rgba(248,113,113,0.2)",
+                    }}
+                  >
+                    {error}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-4 text-xs tracking-widest uppercase transition-all duration-300 mt-2"
-                  style={{ background: "#5B21B6", color: "#F5F0E8" }}
-                  onMouseEnter={(e) => (e.target.style.background = "#4C1D95")}
-                  onMouseLeave={(e) => (e.target.style.background = "#5B21B6")}
+                  disabled={sending}
+                  className="w-full py-4 text-xs tracking-widest uppercase transition-all duration-300 mt-2 rounded-xl"
+                  style={{
+                    background: sending ? "#3B1F7A" : "#5B21B6",
+                    color: "#F5F0E8",
+                    cursor: sending ? "not-allowed" : "pointer",
+                    opacity: sending ? 0.7 : 1,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!sending) e.target.style.background = "#4C1D95";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!sending) e.target.style.background = "#5B21B6";
+                  }}
                 >
-                  Enviar mensaje
+                  {sending ? "Enviando..." : "Enviar mensaje"}
                 </button>
               </form>
             )}

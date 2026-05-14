@@ -26,8 +26,17 @@ const URGENCIA = [
 ];
 
 function BudgetModal({ servicio, onClose }) {
-  const [step, setStep] = useState(servicio ? 2 : 1);
-  const [tipo, setTipo] = useState(servicio);
+  // servicio llega como label desde Services (ej: "Landing Page")
+  // lo mapeamos al id de TIPOS si coincide, sino null
+  const tipoInicial =
+    TIPOS.find(
+      (t) =>
+        t.id === servicio ||
+        t.label.toLowerCase() === (servicio ?? "").toLowerCase(),
+    )?.id ?? null;
+
+  const [step, setStep] = useState(tipoInicial ? 2 : 1);
+  const [tipo, setTipo] = useState(tipoInicial);
   const [features, setFeatures] = useState([]);
   const [urgencia, setUrgencia] = useState("normal");
   const [done, setDone] = useState(false);
@@ -51,14 +60,39 @@ function BudgetModal({ servicio, onClose }) {
     { num: 3, label: "Urgencia" },
   ];
 
-  const handleContacto = () => {
+  const handleContact = () => {
+    // Disparar evento con todos los datos para precargar el formulario
+    const tipoLabel = TIPOS.find((t) => t.id === tipo)?.label ?? tipo;
+    const featuresLabels = features.map(
+      (fid) => FEATURES.find((f) => f.id === fid)?.label ?? fid,
+    );
+    const urgenciaLabel =
+      URGENCIA.find((u) => u.id === urgencia)?.label ?? urgencia;
+
+    window.dispatchEvent(
+      new CustomEvent("budgetSelected", {
+        detail: {
+          tipo: tipoLabel,
+          features: featuresLabels,
+          urgencia: urgenciaLabel,
+        },
+      }),
+    );
+
     onClose();
     setTimeout(() => {
       document
-        .getElementById("contacto")
+        .getElementById("contact")
         ?.scrollIntoView({ behavior: "smooth" });
     }, 300);
   };
+
+  // Datos del resumen — fallback al valor crudo si no matchea por id
+  const tipoLabel = TIPOS.find((t) => t.id === tipo)?.label ?? tipo;
+  const urgenciaData = URGENCIA.find((u) => u.id === urgencia) ?? URGENCIA[0];
+  const featuresLabels = features.map(
+    (fid) => FEATURES.find((f) => f.id === fid)?.label,
+  );
 
   return (
     <AnimatePresence>
@@ -341,6 +375,7 @@ function BudgetModal({ servicio, onClose }) {
                 </AnimatePresence>
               </>
             ) : (
+              /* ==================== PANTALLA DE RESUMEN ==================== */
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -354,25 +389,110 @@ function BudgetModal({ servicio, onClose }) {
                   ✦
                 </div>
                 <p
-                  className="font-serif text-3xl font-bold mb-3"
+                  className="font-serif text-3xl font-bold mb-6"
                   style={{ color: "#A78BFA" }}
                 >
                   ¡Listo para arrancar!
                 </p>
-                <p className="text-sm mb-2" style={{ color: "#6B6B7B" }}>
-                  {TIPOS.find((t) => t.id === tipo)?.label}
-                  {features.length > 0 &&
-                    ` · ${features.length} funcionalidades`}
-                  {urgencia !== "normal" &&
-                    ` · ${URGENCIA.find((u) => u.id === urgencia)?.label}`}
-                </p>
-                <p className="text-sm mb-10" style={{ color: "#3A3A5A" }}>
+
+                {/* Resumen detallado */}
+                <div
+                  className="text-left mx-auto mb-8 p-5 flex flex-col gap-4"
+                  style={{
+                    background: "#111111",
+                    border: "1px solid #1A1A2E",
+                    maxWidth: "420px",
+                  }}
+                >
+                  {/* Tipo */}
+                  <div className="flex justify-between items-center">
+                    <p
+                      className="text-xs uppercase tracking-widest"
+                      style={{ color: "#3A3A5A" }}
+                    >
+                      Tipo de proyecto
+                    </p>
+                    <p
+                      className="text-sm font-medium"
+                      style={{ color: "#F5F0E8" }}
+                    >
+                      {tipoLabel}
+                    </p>
+                  </div>
+
+                  {/* Funcionalidades */}
+                  <div
+                    className="flex justify-between items-start"
+                    style={{
+                      borderTop: "1px solid #1A1A2E",
+                      paddingTop: "1rem",
+                    }}
+                  >
+                    <p
+                      className="text-xs uppercase tracking-widest"
+                      style={{ color: "#3A3A5A" }}
+                    >
+                      Funcionalidades
+                    </p>
+                    {featuresLabels.length > 0 ? (
+                      <div className="flex flex-col items-end gap-1">
+                        {featuresLabels.map((label) => (
+                          <span
+                            key={label}
+                            className="text-xs px-2 py-0.5"
+                            style={{
+                              background: "rgba(91,33,182,0.15)",
+                              border: "1px solid #5B21B6",
+                              color: "#A78BFA",
+                            }}
+                          >
+                            {label}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm" style={{ color: "#3A3A5A" }}>
+                        Ninguna
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Urgencia — siempre visible */}
+                  <div
+                    className="flex justify-between items-center"
+                    style={{
+                      borderTop: "1px solid #1A1A2E",
+                      paddingTop: "1rem",
+                    }}
+                  >
+                    <p
+                      className="text-xs uppercase tracking-widest"
+                      style={{ color: "#3A3A5A" }}
+                    >
+                      Urgencia
+                    </p>
+                    <div className="text-right">
+                      <p
+                        className="text-sm font-medium"
+                        style={{ color: "#F5F0E8" }}
+                      >
+                        {urgenciaData?.label}
+                      </p>
+                      <p className="text-xs" style={{ color: "#A78BFA" }}>
+                        {urgenciaData?.sublabel}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-sm mb-8" style={{ color: "#3A3A5A" }}>
                   Contactame y te preparo un presupuesto personalizado sin
                   compromiso.
                 </p>
+
                 <div className="flex flex-wrap gap-4 justify-center">
                   <button
-                    onClick={handleContacto}
+                    onClick={handleContact}
                     className="px-10 py-4 text-xs tracking-widest uppercase transition-all duration-300"
                     style={{ background: "#5B21B6", color: "#F5F0E8" }}
                     onMouseEnter={(e) =>
