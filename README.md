@@ -1,16 +1,46 @@
-# React + Vite
+# Bruno Lopez Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Modern personal portfolio built to showcase my work, skills and professional profile through a clean and interactive user experience.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[Visit Website](https://bruno-lopez.vercel.app)
 
-## React Compiler
+## Preview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![Portfolio Preview](./screenshot-hero.png)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Fully responsive design
+- Smooth page transitions and animations
+- Modern UI with clean branding
+- Projects showcase section
+- Contact form with validation
+- Optimized performance
+- Recruiter-friendly navigation
+
+## Tech Stack
+
+- React
+- Vite
+- Tailwind CSS
+- Framer Motion
+- JavaScript
+- React Hook Form
+
+## Design Goals
+
+This portfolio was designed with a focus on:
+
+- Strong first impression
+- Clean and modern aesthetics
+- Smooth user interaction
+- Clear presentation of projects and skills
+- Fast loading experience
+
+## Author
+
+BL.dev
+Bruno Lopez
+Frontend Developer focused on building modern digital experiences.
