@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, #root {
+  background-color: #0A0A0A;
+  color: #F5F0E8;
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+::selection {
+  background: #5B21B6;
+  color: #F5F0E8;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5B21B6;
+}
+
+/* Ocultar cursor por defecto */
+body, html, #root {
+  cursor: none !important;
+}
+
+/* Opcional: cursor pointer en elementos interactivos */
+a, button, [role="button"], input, textarea, label {
+  cursor: none !important;
+}
