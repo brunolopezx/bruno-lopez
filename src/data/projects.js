@@ -17,7 +17,7 @@ export const projects = [
     description: "Landing page para un bodegón porteño con menú interactivo, sistema de reservas con validación, galería con lightbox y carrusel de reseñas.",
     techs: ["React", "Tailwind CSS", "Framer Motion", "React Hook Form"],
     github: "https://github.com/brunolopezx/don-pedro",
-    demo: "https://don-pedro.vercel.app",
+    demo: "https://don-pedro-beta.vercel.app",
     image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800",
     color: "#0F0C07"
   },
