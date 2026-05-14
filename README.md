@@ -40,7 +40,8 @@ This portfolio was designed with a focus on:
 - Fast loading experience
 
 ## Author
-
+```text
 BL.dev
 Bruno Lopez
 Frontend Developer focused on building modern digital experiences.
+```
