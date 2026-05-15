@@ -14,6 +14,11 @@ import CustomCursor from "./components/customCursor";
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   const abrirModal = (servicio) => {
     setServicioSeleccionado(servicio);
@@ -22,7 +27,7 @@ function App() {
 
   return (
     <div>
-      <CustomCursor />
+      {!isTouchDevice && <CustomCursor />}
       <Navbar />
       <Hero />
       <Ticker />
