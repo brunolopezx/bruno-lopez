@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const links = [
   { label: "Sobre mí", href: "about" },
   { label: "Proyectos", href: "projects" },
-  { label: "Skills", href: "skills" },
+  { label: "Habilidades", href: "skills" },
   { label: "Servicios", href: "services" },
 ];
 
@@ -17,7 +17,6 @@ function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   const scrollTo = (href) => {
     setMenuOpen(false);
     setTimeout(() => {

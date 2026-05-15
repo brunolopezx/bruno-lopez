@@ -10,6 +10,7 @@ import Contact from "./sections/contact";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import CustomCursor from "./components/customCursor";
+import { LanguageProvider } from "./context/languageContext";
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,24 +27,26 @@ function App() {
   };
 
   return (
-    <div>
-      {!isTouchDevice && <CustomCursor />}
-      <Navbar />
-      <Hero />
-      <Ticker />
-      <About />
-      <Projects />
-      <Skills />
-      <Services onConsultar={abrirModal} />
-      {modalOpen && (
-        <BudgetModal
-          servicio={servicioSeleccionado}
-          onClose={() => setModalOpen(false)}
-        />
-      )}
-      <Contact />
-      <Footer />
-    </div>
+    <LanguageProvider>
+      <div>
+        {!isTouchDevice && <CustomCursor />}
+        <Navbar />
+        <Hero />
+        <Ticker />
+        <About />
+        <Projects />
+        <Skills />
+        <Services onConsultar={abrirModal} />
+        {modalOpen && (
+          <BudgetModal
+            servicio={servicioSeleccionado}
+            onClose={() => setModalOpen(false)}
+          />
+        )}
+        <Contact />
+        <Footer />
+      </div>
+    </LanguageProvider>
   );
 }
 
