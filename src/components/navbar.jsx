@@ -20,9 +20,10 @@ function Navbar() {
 
   const scrollTo = (href) => {
     setMenuOpen(false);
-    document.getElementById(href)?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      document.getElementById(href)?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
   };
-
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
