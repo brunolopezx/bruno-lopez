@@ -3,7 +3,10 @@ export const projects = [
     id: 1,
     title: "ÉLAN Store",
     category: "E-commerce",
-    description: "Tienda de indumentaria femenina con catálogo, filtros por categoría, carrito de compras y checkout completo con validación de formulario.",
+    description: {
+      es: "Tienda de indumentaria femenina con catálogo, filtros por categoría, carrito de compras y checkout completo con validación de formulario.",
+      en: "Women's clothing store with catalog, category filters, shopping cart and complete checkout with form validation."
+    },
     techs: ["React", "Tailwind CSS", "Zustand", "React Router"],
     github: "https://github.com/brunolopezx/elan-store",
     demo: "https://elan-store-tan.vercel.app",
@@ -13,8 +16,14 @@ export const projects = [
   {
     id: 2,
     title: "Don Pedro",
-    category: "Landing / Restaurante",
-    description: "Landing page para un bodegón porteño con menú interactivo, sistema de reservas con validación, galería con lightbox y carrusel de reseñas.",
+    category: {
+      es: "Landing / Restaurante",
+      en: "Landing / Restaurant"
+    },
+    description: {
+      es: "Landing page para un bodegón porteño con menú interactivo, sistema de reservas con validación, galería con lightbox y carrusel de reseñas.",
+      en: "Landing page for an Argentine restaurant with interactive menu, reservation system with validation, lightbox gallery and reviews carousel."
+    },
     techs: ["React", "Tailwind CSS", "Framer Motion", "React Hook Form"],
     github: "https://github.com/brunolopezx/don-pedro",
     demo: "https://don-pedro-beta.vercel.app",
@@ -24,8 +33,14 @@ export const projects = [
   {
     id: 3,
     title: "VISTA Propiedades",
-    category: "Plataforma Inmobiliaria",
-    description: "Plataforma inmobiliaria con catálogo de propiedades, filtros múltiples, galería fullscreen, calculadora de hipoteca interactiva y formulario de consulta.",
+    category: {
+      es: "Plataforma Inmobiliaria",
+      en: "Real Estate Platform"
+    },
+    description: {
+      es: "Plataforma inmobiliaria con catálogo de propiedades, filtros múltiples, galería fullscreen, calculadora de hipoteca interactiva y formulario de consulta.",
+      en: "Real estate platform with property catalog, multiple filters, fullscreen gallery, interactive mortgage calculator and contact form."
+    },
     techs: ["React", "Tailwind CSS", "Framer Motion", "React Hook Form"],
     github: "https://github.com/brunolopezx/vista-propiedades",
     demo: "https://vista-propiedades.vercel.app",

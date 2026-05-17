@@ -1,28 +1,44 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const links = [
-  { label: "Sobre mí", href: "about" },
-  { label: "Proyectos", href: "projects" },
-  { label: "Habilidades", href: "skills" },
-  { label: "Servicios", href: "services" },
-];
+import { useLanguage } from "../context/languageContext";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef(null);
+  const { lang, t, toggleLang } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (langRef.current && !langRef.current.contains(e.target)) {
+        setLangOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
   const scrollTo = (href) => {
     setMenuOpen(false);
     setTimeout(() => {
       document.getElementById(href)?.scrollIntoView({ behavior: "smooth" });
     }, 300);
   };
+
+  const links = [
+    { label: t?.nav?.about || "Sobre mi", href: "about" },
+    { label: t?.nav?.projects || "Proyectos", href: "projects" },
+    { label: t?.nav?.skills || "Skills", href: "skills" },
+    { label: t?.nav?.services || "Servicios", href: "services" },
+  ];
+
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
@@ -59,7 +75,7 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {links.map((link) => (
             <button
-              key={link.label}
+              key={link.href}
               onClick={() => scrollTo(link.href)}
               className="text-xs tracking-widest uppercase transition-colors"
               style={{ color: "#3A3A5A" }}
@@ -69,6 +85,79 @@ function Navbar() {
               {link.label}
             </button>
           ))}
+
+          {/* Language dropdown */}
+          <div ref={langRef} className="relative">
+            <button
+              onClick={() => setLangOpen(!langOpen)}
+              className="flex items-center gap-1.5 text-xs tracking-widest uppercase px-3 py-1.5 transition-all duration-300"
+              style={{ border: "1px solid #1A1A2E", color: "#6B6B7B" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#5B21B6";
+                e.currentTarget.style.color = "#A78BFA";
+              }}
+              onMouseLeave={(e) => {
+                if (!langOpen) {
+                  e.currentTarget.style.borderColor = "#1A1A2E";
+                  e.currentTarget.style.color = "#6B6B7B";
+                }
+              }}
+            >
+              {lang === "es" ? "ES" : "EN"}
+              <motion.span
+                animate={{ rotate: langOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ fontSize: 8 }}
+              >
+                ▼
+              </motion.span>
+            </button>
+
+            <AnimatePresence>
+              {langOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-2 overflow-hidden"
+                  style={{
+                    background: "#111111",
+                    border: "1px solid #1A1A2E",
+                    minWidth: 100,
+                  }}
+                >
+                  {["es", "en"].map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => {
+                        if (l !== lang) toggleLang();
+                        setLangOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-xs tracking-widest uppercase transition-colors"
+                      style={{
+                        color: l === lang ? "#A78BFA" : "#6B6B7B",
+                        background:
+                          l === lang ? "rgba(91,33,182,0.1)" : "transparent",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (l !== lang)
+                          e.currentTarget.style.background =
+                            "rgba(91,33,182,0.06)";
+                      }}
+                      onMouseLeave={(e) => {
+                        if (l !== lang)
+                          e.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      {l === "es" ? "Español" : "English"}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <button
             onClick={() => scrollTo("contact")}
             className="text-xs tracking-widest uppercase px-5 py-2 transition-all duration-300"
@@ -86,7 +175,7 @@ function Navbar() {
               e.target.style.color = "#A78BFA";
             }}
           >
-            Trabajemos
+            {t?.nav?.cta || "Trabajemos"}
           </button>
         </div>
 
@@ -127,7 +216,7 @@ function Navbar() {
             <div className="px-6 py-6 flex flex-col gap-4">
               {links.map((link) => (
                 <button
-                  key={link.label}
+                  key={link.href}
                   onClick={() => scrollTo(link.href)}
                   className="text-xs tracking-widest uppercase text-left py-2"
                   style={{
@@ -138,12 +227,31 @@ function Navbar() {
                   {link.label}
                 </button>
               ))}
+              <div className="flex gap-3">
+                {["es", "en"].map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => {
+                      if (l !== lang) toggleLang();
+                    }}
+                    className="text-xs tracking-widest uppercase px-4 py-2"
+                    style={{
+                      background:
+                        l === lang ? "rgba(91,33,182,0.15)" : "transparent",
+                      border: `1px solid ${l === lang ? "#5B21B6" : "#1A1A2E"}`,
+                      color: l === lang ? "#A78BFA" : "#6B6B7B",
+                    }}
+                  >
+                    {l === "es" ? "Español" : "English"}
+                  </button>
+                ))}
+              </div>
               <button
                 onClick={() => scrollTo("contact")}
                 className="text-xs tracking-widest uppercase py-3 mt-2"
                 style={{ background: "#5B21B6", color: "#F5F0E8" }}
               >
-                Trabajemos
+                {t?.nav?.cta || "Trabajemos"}
               </button>
             </div>
           </motion.div>

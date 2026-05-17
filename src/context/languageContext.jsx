@@ -1,7 +1,5 @@
 import { createContext, useContext, useState } from "react";
 
-const LanguageContext = createContext();
-
 export const translations = {
   es: {
     nav: {
@@ -95,7 +93,7 @@ export const translations = {
           time: "4 — 8 semanas",
         },
         {
-          title: "Dashboard / Panel",
+          title: "Dashboard",
           description:
             "Panel de administración o métricas para tu negocio. Gráficos, tablas y gestión de datos.",
           features: [
@@ -110,17 +108,21 @@ export const translations = {
     },
     contact: {
       tag: "Hablemos",
-      title: "Contacto",
-      subtitle:
-        "¿Tenés un proyecto en mente? Escribime y te respondo en menos de 24 horas.",
+      titleLine1: "¿Tenés un proyecto",
+      titleLine2: "en mente?",
+      subtitle: "Escribime y te respondo en menos de 24 horas.",
       available: "Disponible para proyectos",
       availableText:
         "Actualmente acepto nuevos proyectos freelance. Tiempo de respuesta: menos de 24hs.",
+      locationLabel: "Ubicación",
+      availabilityLabel: "Disponibilidad",
+      availabilityValue: "Lunes a Viernes · 9hs - 18hs",
       name: "Nombre",
       email: "Email",
       subject: "Asunto",
       message: "Mensaje",
       namePlaceholder: "Tu nombre",
+      emailPlaceholder: "tu@email.com",
       subjectPlaceholder: "¿De qué se trata tu proyecto?",
       messagePlaceholder: "Contame sobre tu proyecto...",
       send: "Enviar mensaje",
@@ -136,7 +138,7 @@ export const translations = {
       nav: "Navegación",
       contact: "Contacto",
       available: "Disponible para proyectos",
-      rights: "© 2026 Bruno Lopez · Todos los derechos reservados",
+      rights: "© 2026 Bruno Lopez Scidá | Todos los derechos reservados",
     },
   },
   en: {
@@ -231,7 +233,7 @@ export const translations = {
           time: "4 — 8 weeks",
         },
         {
-          title: "Dashboard / Panel",
+          title: "Dashboard",
           description:
             "Admin panel or metrics dashboard for your business. Charts, tables and data management.",
           features: [
@@ -246,17 +248,21 @@ export const translations = {
     },
     contact: {
       tag: "Let's talk",
-      title: "Contact",
-      subtitle:
-        "Got a project in mind? Write to me and I will get back to you in less than 24 hours.",
+      titleLine1: "Got a project ",
+      titleLine2: "in mind?",
+      subtitle: "Write to me and I will get back to you in less than 24 hours.",
       available: "Available for projects",
       availableText:
         "Currently accepting new freelance projects. Response time: less than 24hs.",
+      locationLabel: "Location",
+      availabilityLabel: "Availability",
+      availabilityValue: "Monday to Friday · 9am - 6pm",
       name: "Name",
       email: "Email",
       subject: "Subject",
       message: "Message",
       namePlaceholder: "Your name",
+      emailPlaceholder: "your@email.com",
       subjectPlaceholder: "What is your project about?",
       messagePlaceholder: "Tell me about your project...",
       send: "Send message",
@@ -272,10 +278,15 @@ export const translations = {
       nav: "Navigation",
       contact: "Contact",
       available: "Available for projects",
-      rights: "© 2026 Bruno Lopez · All rights reserved",
+      rights: "© 2026 Bruno Lopez Scidá | All rights reserved",
     },
   },
 };
+const LanguageContext = createContext({
+  lang: "es",
+  t: translations["es"],
+  toggleLang: () => {},
+});
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState("es");

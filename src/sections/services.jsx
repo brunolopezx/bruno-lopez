@@ -1,65 +1,58 @@
 import { motion } from "framer-motion";
-
-const servicios = [
-  {
-    id: "01",
-    title: "Landing Page",
-    description:
-      "Página de presentación para tu negocio o emprendimiento. Diseño moderno, responsive y optimizado para conversión.",
-    features: [
-      "Diseño personalizado",
-      "Formulario de contacto",
-      "Animaciones",
-      "Deploy incluido",
-    ],
-    tiempo: "1 — 2 semanas",
-    desde: "Desde USD 300",
-  },
-  {
-    id: "02",
-    title: "Tienda Online",
-    description:
-      "E-commerce completo con catálogo de productos, carrito de compras y checkout. Listo para vender.",
-    features: [
-      "Catálogo con filtros",
-      "Carrito de compras",
-      "Checkout",
-      "Panel de gestión",
-    ],
-    tiempo: "3 — 4 semanas",
-    desde: "Desde USD 800",
-  },
-  {
-    id: "03",
-    title: "App Mobile",
-    description:
-      "Aplicación móvil para iOS y Android con Flutter. Una sola base de código, dos plataformas.",
-    features: [
-      "iOS y Android",
-      "Diseño nativo",
-      "API integration",
-      "Publicación en stores",
-    ],
-    tiempo: "4 — 8 semanas",
-    desde: "Desde USD 1200",
-  },
-  {
-    id: "04",
-    title: "Dashboard",
-    description:
-      "Panel de administración o métricas para tu negocio. Gráficos, tablas y gestión de datos.",
-    features: [
-      "Gráficos interactivos",
-      "Gestión de usuarios",
-      "Reportes",
-      "Exportar datos",
-    ],
-    tiempo: "2 — 4 semanas",
-    desde: "Desde USD 600",
-  },
-];
+import { useLanguage } from "../context/languageContext";
 
 function Services({ onConsultar }) {
+  const { t } = useLanguage();
+  const sv = t?.services || {};
+  const items = sv.items || [
+    {
+      title: "Landing Page",
+      description: "Pagina de presentacion para tu negocio.",
+      features: [
+        "Diseno personalizado",
+        "Formulario de contacto",
+        "Animaciones",
+        "Deploy incluido",
+      ],
+      time: "1 - 2 semanas",
+    },
+    {
+      title: "Tienda Online",
+      description: "E-commerce completo con catalogo, carrito y checkout.",
+      features: [
+        "Catalogo con filtros",
+        "Carrito de compras",
+        "Checkout",
+        "Panel de gestion",
+      ],
+      time: "3 - 4 semanas",
+    },
+    {
+      title: "App Mobile",
+      description: "Aplicacion movil para iOS y Android con Flutter.",
+      features: [
+        "iOS y Android",
+        "Diseno nativo",
+        "API integration",
+        "Publicacion en stores",
+      ],
+      time: "4 - 8 semanas",
+    },
+    {
+      title: "Dashboard",
+      description: "Panel de administracion o metricas para tu negocio.",
+      features: [
+        "Graficos interactivos",
+        "Gestion de usuarios",
+        "Reportes",
+        "Exportar datos",
+      ],
+      time: "2 - 4 semanas",
+    },
+  ];
+
+  const ids = ["01", "02", "03", "04"];
+
   return (
     <section
       id="services"
@@ -80,30 +73,27 @@ function Services({ onConsultar }) {
               className="text-xs tracking-[.4em] uppercase"
               style={{ color: "#A78BFA" }}
             >
-              Lo que ofrezco
+              {sv.tag || "Lo que ofrezco"}
             </p>
           </div>
           <h2
             className="font-serif text-5xl font-bold"
             style={{ color: "#F5F0E8" }}
           >
-            Servicios
+            {sv.title || "Servicios"}
           </h2>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {servicios.map((s, i) => (
+          {items.map((s, i) => (
             <motion.div
-              key={s.id}
+              key={ids[i]}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="p-8 group transition-all duration-300"
-              style={{
-                background: "#111111",
-                border: "1px solid #1A1A2E",
-              }}
+              style={{ background: "#111111", border: "1px solid #1A1A2E" }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.borderColor = "#5B21B6")
               }
@@ -116,7 +106,7 @@ function Services({ onConsultar }) {
                   className="font-serif text-4xl font-bold"
                   style={{ color: "#1A1A2E" }}
                 >
-                  {s.id}
+                  {ids[i]}
                 </span>
                 <span
                   className="text-xs px-3 py-1"
@@ -126,7 +116,7 @@ function Services({ onConsultar }) {
                     border: "1px solid rgba(91,33,182,0.3)",
                   }}
                 >
-                  {s.tiempo}
+                  {s.time}
                 </span>
               </div>
 
@@ -159,7 +149,7 @@ function Services({ onConsultar }) {
                 style={{ borderTop: "1px solid #1A1A2E" }}
               >
                 <p className="text-sm font-medium" style={{ color: "#6B6B7B" }}>
-                  Precio a convenir
+                  {sv.price || "Precio a convenir"}
                 </p>
                 <button
                   className="text-xs tracking-widest uppercase px-4 py-2 transition-all duration-300"
@@ -178,7 +168,7 @@ function Services({ onConsultar }) {
                     e.target.style.color = "#A78BFA";
                   }}
                 >
-                  Consultar
+                  {sv.cta || "Consultar"}
                 </button>
               </div>
             </motion.div>

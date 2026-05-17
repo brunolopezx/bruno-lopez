@@ -1,14 +1,8 @@
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
+import { useLanguage } from "../context/languageContext";
 
-const ROLES = [
-  "Frontend Developer",
-  "React Developer",
-  "Flutter Developer",
-  "UI/UX Enthusiast",
-];
-
-function TypingText() {
+function TypingText({ roles }) {
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -22,9 +16,7 @@ function TypingText() {
       }, 1800);
       return () => clearTimeout(t);
     }
-
-    const current = ROLES[roleIndex];
-
+    const current = roles[roleIndex];
     if (!deleting && displayed.length < current.length) {
       const t = setTimeout(
         () => setDisplayed(current.slice(0, displayed.length + 1)),
@@ -32,22 +24,19 @@ function TypingText() {
       );
       return () => clearTimeout(t);
     }
-
     if (!deleting && displayed.length === current.length) {
       setPause(true);
       return;
     }
-
     if (deleting && displayed.length > 0) {
       const t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 35);
       return () => clearTimeout(t);
     }
-
     if (deleting && displayed.length === 0) {
       setDeleting(false);
-      setRoleIndex((roleIndex + 1) % ROLES.length);
+      setRoleIndex((roleIndex + 1) % roles.length);
     }
-  }, [displayed, deleting, pause, roleIndex]);
+  }, [displayed, deleting, pause, roleIndex, roles]);
 
   return (
     <span style={{ color: "#A78BFA" }}>
@@ -65,19 +54,16 @@ function TypingText() {
 
 function CloudParticles() {
   const canvasRef = useRef(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let animId;
-
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
     };
     resize();
     window.addEventListener("resize", resize);
-
     const blobs = Array.from({ length: 18 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -87,54 +73,47 @@ function CloudParticles() {
       opacity: Math.random() * 0.07 + 0.02,
       pulse: Math.random() * Math.PI * 2,
     }));
-
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       blobs.forEach((b) => {
         b.pulse += 0.008;
         b.x += b.vx;
         b.y += b.vy;
-
         if (b.x < -b.r) b.x = canvas.width + b.r;
         if (b.x > canvas.width + b.r) b.x = -b.r;
         if (b.y < -b.r) b.y = canvas.height + b.r;
         if (b.y > canvas.height + b.r) b.y = -b.r;
-
         const currentOpacity = b.opacity + Math.sin(b.pulse) * 0.02;
         const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
         grad.addColorStop(0, `rgba(91, 33, 182, ${currentOpacity})`);
         grad.addColorStop(0.5, `rgba(139, 92, 246, ${currentOpacity * 0.5})`);
         grad.addColorStop(1, "rgba(91, 33, 182, 0)");
-
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
         ctx.fillStyle = grad;
         ctx.fill();
       });
-
       animId = requestAnimationFrame(draw);
     };
-
     draw();
-
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
   }, []);
-
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
 }
 
 function Hero() {
+  const { t } = useLanguage();
+  const hero = t?.hero || {};
+
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Gradiente animado de fondo */}
       <motion.div
         className="absolute inset-0"
         animate={{
@@ -147,11 +126,7 @@ function Hero() {
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
-
-      {/* Partículas nube */}
       <CloudParticles />
-
-      {/* Líneas decorativas */}
       <div
         className="absolute top-0 right-0 w-px h-full opacity-10"
         style={{
@@ -167,7 +142,6 @@ function Hero() {
         }}
       />
 
-      {/* Contenido */}
       <div className="relative z-10 max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -180,7 +154,7 @@ function Hero() {
             className="text-xs tracking-[.4em] uppercase"
             style={{ color: "#6B6B7B" }}
           >
-            Disponible para proyectos
+            {hero.available || "Disponible para proyectos"}
           </p>
           <span
             className="w-2 h-2 rounded-full"
@@ -206,7 +180,7 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-2xl md:text-3xl font-light mb-8 h-10"
         >
-          <TypingText />
+          <TypingText roles={hero.roles || ["Frontend Developer"]} />
         </motion.div>
 
         <motion.p
@@ -216,8 +190,8 @@ function Hero() {
           className="text-base leading-relaxed mb-12 max-w-xl"
           style={{ color: "#6B6B7B" }}
         >
-          Diseño y desarrollo interfaces web y mobile modernas, rápidas y
-          funcionales. Especializado en React, Flutter y Angular. Inglés C1.
+          {hero.description ||
+            "Diseño y desarrollo interfaces web y mobile modernas."}
         </motion.p>
 
         <motion.div
@@ -233,7 +207,7 @@ function Hero() {
             onMouseEnter={(e) => (e.target.style.background = "#4C1D95")}
             onMouseLeave={(e) => (e.target.style.background = "#5B21B6")}
           >
-            Ver proyectos
+            {hero.btnProjects || "Ver proyectos"}
           </button>
           <button
             onClick={() => scrollTo("contact")}
@@ -252,7 +226,7 @@ function Hero() {
               e.target.style.color = "#A78BFA";
             }}
           >
-            Contactame
+            {hero.btnContact || "Contactame"}
           </button>
         </motion.div>
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { projects } from "../data/projects";
+import { useLanguage } from "../context/languageContext";
 import {
   SiReact,
   SiTailwindcss,
@@ -16,13 +17,12 @@ const techIcons = {
   "Tailwind CSS": SiTailwindcss,
   "Framer Motion": SiFramer,
   "React Router": SiReactrouter,
-
   Flutter: SiFlutter,
   Vite: SiVite,
   "React Hook Form": TbBrandReactNative,
 };
 
-function ProjectCard({ project, index }) {
+function ProjectCard({ project, index, demoLabel, lang }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -70,7 +70,6 @@ function ProjectCard({ project, index }) {
             transition: "opacity 0.3s",
           }}
         />
-
         <div
           className="absolute inset-0 flex items-center justify-center gap-4"
           style={{ opacity: hovered ? 1 : 0, transition: "opacity 0.3s" }}
@@ -82,7 +81,7 @@ function ProjectCard({ project, index }) {
             className="px-6 py-3 text-xs tracking-widest uppercase"
             style={{ background: "#5B21B6", color: "#F5F0E8" }}
           >
-            Ver demo
+            {demoLabel || "Ver demo"}
           </a>
           <a
             href={project.github}
@@ -94,12 +93,13 @@ function ProjectCard({ project, index }) {
             GitHub
           </a>
         </div>
-
         <div
           className="absolute top-3 left-3 px-2 py-1 text-xs tracking-widest uppercase"
           style={{ background: "rgba(91,33,182,0.8)", color: "#F5F0E8" }}
         >
-          {project.category}
+          {typeof project.category === "object"
+            ? project.category[lang]
+            : project.category}
         </div>
       </div>
 
@@ -118,14 +118,14 @@ function ProjectCard({ project, index }) {
             0{project.id}
           </span>
         </div>
-
         <p
           className="text-sm leading-relaxed mb-6"
           style={{ color: "#6B6B7B" }}
         >
-          {project.description}
+          {typeof project.description === "object"
+            ? project.description[lang]
+            : project.description}
         </p>
-
         <div
           className="flex flex-wrap gap-2 pt-4"
           style={{ borderTop: "1px solid #1A1A2E" }}
@@ -154,6 +154,9 @@ function ProjectCard({ project, index }) {
 }
 
 function Projects() {
+  const { t, lang } = useLanguage();
+  const proj = t?.projects || {};
+
   return (
     <section id="projects" className="py-28 px-6">
       <div className="max-w-6xl mx-auto">
@@ -170,20 +173,26 @@ function Projects() {
               className="text-xs tracking-[.4em] uppercase"
               style={{ color: "#A78BFA" }}
             >
-              Mi trabajo
+              {proj.tag || "Mi trabajo"}
             </p>
           </div>
           <h2
             className="font-serif text-5xl font-bold"
             style={{ color: "#F5F0E8" }}
           >
-            Proyectos
+            {proj.title || "Proyectos"}
           </h2>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={i}
+              demoLabel={proj.demo}
+              lang={lang}
+            />
           ))}
         </div>
       </div>

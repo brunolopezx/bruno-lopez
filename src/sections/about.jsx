@@ -6,6 +6,7 @@ import {
   animate,
 } from "framer-motion";
 import { useRef, useEffect } from "react";
+import { useLanguage } from "../context/languageContext";
 
 function Counter({ to, label }) {
   const ref = useRef(null);
@@ -51,6 +52,8 @@ function Counter({ to, label }) {
 function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { t } = useLanguage();
+  const about = t?.about || {};
 
   return (
     <section
@@ -73,58 +76,61 @@ function About() {
                 className="text-xs tracking-[.4em] uppercase"
                 style={{ color: "#A78BFA" }}
               >
-                Sobre mí
+                {about.tag || "Sobre mí"}
               </p>
             </div>
             <h2
               className="font-serif text-5xl font-bold mb-8 leading-tight"
               style={{ color: "#F5F0E8" }}
             >
-              Construyo productos
+              {about.title || "Construyo productos"}
               <br />
-              <span style={{ color: "#5B21B6" }}>que importan.</span>
+              <span style={{ color: "#5B21B6" }}>
+                {about.titleAccent || "que importan."}
+              </span>
             </h2>
             <p
               className="text-sm leading-relaxed mb-6"
               style={{ color: "#6B6B7B" }}
             >
-              Soy Bruno Lopez, técnico en programación y desarrollador frontend
-              de Córdoba, Argentina. Me especializo en construir interfaces web
-              y mobile que combinan buen diseño con código limpio y performante.
+              {about.p1 ||
+                "Soy Bruno Lopez, técnico en programación y desarrollador frontend de Córdoba, Argentina."}
             </p>
             <p
               className="text-sm leading-relaxed mb-6"
               style={{ color: "#6B6B7B" }}
             >
-              Trabajo con React, Flutter y Angular para crear experiencias
-              digitales que los usuarios disfrutan usar. Tengo experiencia en
-              proyectos de e-commerce, landing pages, dashboards y aplicaciones
-              mobile.
+              {about.p2 ||
+                "Trabajo con React, Flutter y Angular para crear experiencias digitales que los usuarios disfrutan usar."}
             </p>
             <p
               className="text-sm leading-relaxed mb-10"
               style={{ color: "#6B6B7B" }}
             >
-              Inglés C1 — puedo trabajar con clientes y equipos internacionales
-              sin problema.
+              {about.p3 ||
+                "Inglés C1 — puedo trabajar con clientes y equipos internacionales sin problema."}
             </p>
 
             <div className="flex flex-wrap gap-3">
-              {["Disponible para proyectos", "Freelance", "Remote"].map(
-                (tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-4 py-2"
-                    style={{
-                      background: "rgba(91,33,182,0.1)",
-                      color: "#A78BFA",
-                      border: "1px solid rgba(91,33,182,0.3)",
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ),
-              )}
+              {(
+                about.tags || [
+                  "Disponible para proyectos",
+                  "Freelance",
+                  "Remote",
+                ]
+              ).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs px-4 py-2"
+                  style={{
+                    background: "rgba(91,33,182,0.1)",
+                    color: "#A78BFA",
+                    border: "1px solid rgba(91,33,182,0.3)",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </motion.div>
 
@@ -139,7 +145,6 @@ function About() {
               className="aspect-square relative overflow-hidden"
               style={{ background: "#111111", border: "1px solid #1A1A2E" }}
             >
-              {/* Decoración geométrica */}
               <div
                 className="absolute inset-0"
                 style={{
@@ -167,7 +172,6 @@ function About() {
                   </p>
                 </div>
               </div>
-              {/* Esquinas decorativas */}
               <div
                 className="absolute top-4 left-4 w-8 h-8"
                 style={{
@@ -208,10 +212,19 @@ function About() {
           className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-16"
           style={{ borderTop: "1px solid #1A1A2E" }}
         >
-          <Counter to={3} label="Proyectos en portfolio" />
-          <Counter to={10} label="Tecnologías" />
-          <Counter to={2} label="Años de experiencia" />
-          <Counter to={100} label="% Comprometido" />
+          <Counter
+            to={3}
+            label={(about.stats || [])[0] || "Proyectos en portfolio"}
+          />
+          <Counter to={10} label={(about.stats || [])[1] || "Tecnologías"} />
+          <Counter
+            to={2}
+            label={(about.stats || [])[2] || "Años de experiencia"}
+          />
+          <Counter
+            to={100}
+            label={(about.stats || [])[3] || "% Comprometido"}
+          />
         </motion.div>
       </div>
     </section>

@@ -1,33 +1,65 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const TIPOS = [
-  { id: "landing", label: "Landing Page" },
-  { id: "ecommerce", label: "Tienda Online" },
-  { id: "mobile", label: "App Mobile" },
-  { id: "dashboard", label: "Dashboard" },
-];
-
-const FEATURES = [
-  { id: "responsive", label: "Diseño responsive" },
-  { id: "animations", label: "Animaciones" },
-  { id: "cms", label: "CMS / Blog" },
-  { id: "auth", label: "Login / Registro" },
-  { id: "api", label: "Integración con API" },
-  { id: "payments", label: "Pagos online" },
-  { id: "admin", label: "Panel de administración" },
-  { id: "seo", label: "SEO optimizado" },
-];
-
-const URGENCIA = [
-  { id: "normal", label: "Normal", sublabel: "+30 días" },
-  { id: "rapido", label: "Rápido", sublabel: "15 — 30 días" },
-  { id: "urgente", label: "Urgente", sublabel: "Menos de 15 días" },
-];
+import { useLanguage } from "../context/languageContext";
 
 function BudgetModal({ servicio, onClose }) {
-  // servicio llega como label desde Services (ej: "Landing Page")
-  // lo mapeamos al id de TIPOS si coincide, sino null
+  const { t, lang } = useLanguage();
+  const bm = t?.budget || {};
+
+  const TIPOS = [
+    { id: "landing", label: lang === "en" ? "Landing Page" : "Landing Page" },
+    {
+      id: "ecommerce",
+      label: lang === "en" ? "Online Store" : "Tienda Online",
+    },
+    { id: "mobile", label: lang === "en" ? "Mobile App" : "App Mobile" },
+    { id: "dashboard", label: lang === "en" ? "Dashboard" : "Dashboard" },
+  ];
+
+  const FEATURES = [
+    {
+      id: "responsive",
+      label: lang === "en" ? "Responsive design" : "Diseño responsive",
+    },
+    { id: "animations", label: lang === "en" ? "Animations" : "Animaciones" },
+    { id: "cms", label: lang === "en" ? "CMS / Blog" : "CMS / Blog" },
+    {
+      id: "auth",
+      label: lang === "en" ? "Login / Register" : "Login / Registro",
+    },
+    {
+      id: "api",
+      label: lang === "en" ? "API integration" : "Integración con API",
+    },
+    {
+      id: "payments",
+      label: lang === "en" ? "Online payments" : "Pagos online",
+    },
+    {
+      id: "admin",
+      label: lang === "en" ? "Admin panel" : "Panel de administración",
+    },
+    { id: "seo", label: lang === "en" ? "SEO optimized" : "SEO optimizado" },
+  ];
+
+  const URGENCIA = [
+    {
+      id: "normal",
+      label: lang === "en" ? "Normal" : "Normal",
+      sublabel: lang === "en" ? "+30 days" : "+30 días",
+    },
+    {
+      id: "rapido",
+      label: lang === "en" ? "Fast" : "Rápido",
+      sublabel: lang === "en" ? "15 — 30 days" : "15 — 30 días",
+    },
+    {
+      id: "urgente",
+      label: lang === "en" ? "Urgent" : "Urgente",
+      sublabel: lang === "en" ? "Less than 15 days" : "Menos de 15 días",
+    },
+  ];
+
   const tipoInicial =
     TIPOS.find(
       (t) =>
@@ -55,13 +87,12 @@ function BudgetModal({ servicio, onClose }) {
   };
 
   const steps = [
-    { num: 1, label: "Tipo" },
-    { num: 2, label: "Funcionalidades" },
-    { num: 3, label: "Urgencia" },
+    { num: 1, label: lang === "en" ? "Type" : "Tipo" },
+    { num: 2, label: lang === "en" ? "Features" : "Funcionalidades" },
+    { num: 3, label: lang === "en" ? "Urgency" : "Urgencia" },
   ];
 
   const handleContact = () => {
-    // Disparar evento con todos los datos para precargar el formulario
     const tipoLabel = TIPOS.find((t) => t.id === tipo)?.label ?? tipo;
     const featuresLabels = features.map(
       (fid) => FEATURES.find((f) => f.id === fid)?.label ?? fid,
@@ -87,7 +118,6 @@ function BudgetModal({ servicio, onClose }) {
     }, 300);
   };
 
-  // Datos del resumen — fallback al valor crudo si no matchea por id
   const tipoLabel = TIPOS.find((t) => t.id === tipo)?.label ?? tipo;
   const urgenciaData = URGENCIA.find((u) => u.id === urgencia) ?? URGENCIA[0];
   const featuresLabels = features.map(
@@ -123,13 +153,15 @@ function BudgetModal({ servicio, onClose }) {
                 className="text-xs uppercase tracking-widest mb-1"
                 style={{ color: "#A78BFA" }}
               >
-                Presupuesto
+                {lang === "en" ? "Budget" : "Presupuesto"}
               </p>
               <p
                 className="font-serif text-xl font-bold"
                 style={{ color: "#F5F0E8" }}
               >
-                Contame sobre tu proyecto
+                {lang === "en"
+                  ? "Tell me about your project"
+                  : "Contame sobre tu proyecto"}
               </p>
             </div>
             <button
@@ -195,7 +227,9 @@ function BudgetModal({ servicio, onClose }) {
                       transition={{ duration: 0.25 }}
                     >
                       <p className="text-sm mb-4" style={{ color: "#6B6B7B" }}>
-                        ¿Qué tipo de proyecto necesitás?
+                        {lang === "en"
+                          ? "What type of project do you need?"
+                          : "Que tipo de proyecto necesitas?"}
                       </p>
                       <div className="grid grid-cols-2 gap-3 mb-6">
                         {TIPOS.map((t) => (
@@ -225,7 +259,9 @@ function BudgetModal({ servicio, onClose }) {
                                 color: tipo === t.id ? "#A78BFA" : "#3A3A5A",
                               }}
                             >
-                              Presupuesto personalizado
+                              {lang === "en"
+                                ? "Custom quote"
+                                : "Presupuesto personalizado"}
                             </p>
                           </button>
                         ))}
@@ -239,7 +275,7 @@ function BudgetModal({ servicio, onClose }) {
                           cursor: tipo ? "pointer" : "not-allowed",
                         }}
                       >
-                        Siguiente →
+                        {lang === "en" ? "Next →" : "Siguiente →"}
                       </button>
                     </motion.div>
                   )}
@@ -254,7 +290,9 @@ function BudgetModal({ servicio, onClose }) {
                       transition={{ duration: 0.25 }}
                     >
                       <p className="text-sm mb-4" style={{ color: "#6B6B7B" }}>
-                        ¿Qué funcionalidades necesitás? (opcional)
+                        {lang === "en"
+                          ? "What features do you need? (optional)"
+                          : "Que funcionalidades necesitas? (opcional)"}
                       </p>
                       <div className="grid grid-cols-2 gap-3 mb-6">
                         {FEATURES.map((f) => (
@@ -291,14 +329,14 @@ function BudgetModal({ servicio, onClose }) {
                             color: "#6B6B7B",
                           }}
                         >
-                          ← Atrás
+                          {lang === "en" ? "← Back" : "← Atras"}
                         </button>
                         <button
                           onClick={() => setStep(3)}
                           className="px-8 py-3 text-xs tracking-widest uppercase"
                           style={{ background: "#5B21B6", color: "#F5F0E8" }}
                         >
-                          Siguiente →
+                          {lang === "en" ? "Next →" : "Siguiente →"}
                         </button>
                       </div>
                     </motion.div>
@@ -314,7 +352,9 @@ function BudgetModal({ servicio, onClose }) {
                       transition={{ duration: 0.25 }}
                     >
                       <p className="text-sm mb-4" style={{ color: "#6B6B7B" }}>
-                        ¿Con qué urgencia lo necesitás?
+                        {lang === "en"
+                          ? "How urgent is it?"
+                          : "Con que urgencia lo necesitas?"}
                       </p>
                       <div className="flex flex-col gap-3 mb-6">
                         {URGENCIA.map((u) => (
@@ -360,14 +400,14 @@ function BudgetModal({ servicio, onClose }) {
                             color: "#6B6B7B",
                           }}
                         >
-                          ← Atrás
+                          {lang === "en" ? "← Back" : "← Atras"}
                         </button>
                         <button
                           onClick={() => setDone(true)}
                           className="px-8 py-3 text-xs tracking-widest uppercase"
                           style={{ background: "#5B21B6", color: "#F5F0E8" }}
                         >
-                          Ver resumen
+                          {lang === "en" ? "See summary" : "Ver resumen"}
                         </button>
                       </div>
                     </motion.div>
@@ -375,7 +415,6 @@ function BudgetModal({ servicio, onClose }) {
                 </AnimatePresence>
               </>
             ) : (
-              /* ==================== PANTALLA DE RESUMEN ==================== */
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -392,10 +431,9 @@ function BudgetModal({ servicio, onClose }) {
                   className="font-serif text-3xl font-bold mb-6"
                   style={{ color: "#A78BFA" }}
                 >
-                  ¡Listo para arrancar!
+                  {lang === "en" ? "Ready to start!" : "Listo para arrancar!"}
                 </p>
 
-                {/* Resumen detallado */}
                 <div
                   className="text-left mx-auto mb-8 p-5 flex flex-col gap-4"
                   style={{
@@ -404,13 +442,12 @@ function BudgetModal({ servicio, onClose }) {
                     maxWidth: "420px",
                   }}
                 >
-                  {/* Tipo */}
                   <div className="flex justify-between items-center">
                     <p
                       className="text-xs uppercase tracking-widest"
                       style={{ color: "#3A3A5A" }}
                     >
-                      Tipo de proyecto
+                      {lang === "en" ? "Project type" : "Tipo de proyecto"}
                     </p>
                     <p
                       className="text-sm font-medium"
@@ -419,8 +456,6 @@ function BudgetModal({ servicio, onClose }) {
                       {tipoLabel}
                     </p>
                   </div>
-
-                  {/* Funcionalidades */}
                   <div
                     className="flex justify-between items-start"
                     style={{
@@ -432,7 +467,7 @@ function BudgetModal({ servicio, onClose }) {
                       className="text-xs uppercase tracking-widest"
                       style={{ color: "#3A3A5A" }}
                     >
-                      Funcionalidades
+                      {lang === "en" ? "Features" : "Funcionalidades"}
                     </p>
                     {featuresLabels.length > 0 ? (
                       <div className="flex flex-col items-end gap-1">
@@ -452,12 +487,10 @@ function BudgetModal({ servicio, onClose }) {
                       </div>
                     ) : (
                       <p className="text-sm" style={{ color: "#3A3A5A" }}>
-                        Ninguna
+                        {lang === "en" ? "None" : "Ninguna"}
                       </p>
                     )}
                   </div>
-
-                  {/* Urgencia — siempre visible */}
                   <div
                     className="flex justify-between items-center"
                     style={{
@@ -469,7 +502,7 @@ function BudgetModal({ servicio, onClose }) {
                       className="text-xs uppercase tracking-widest"
                       style={{ color: "#3A3A5A" }}
                     >
-                      Urgencia
+                      {lang === "en" ? "Urgency" : "Urgencia"}
                     </p>
                     <div className="text-right">
                       <p
@@ -486,8 +519,9 @@ function BudgetModal({ servicio, onClose }) {
                 </div>
 
                 <p className="text-sm mb-8" style={{ color: "#3A3A5A" }}>
-                  Contactame y te preparo un presupuesto personalizado sin
-                  compromiso.
+                  {lang === "en"
+                    ? "Contact me and I will prepare a personalized quote with no commitment."
+                    : "Contactame y te preparo un presupuesto personalizado sin compromiso."}
                 </p>
 
                 <div className="flex flex-wrap gap-4 justify-center">
@@ -502,7 +536,7 @@ function BudgetModal({ servicio, onClose }) {
                       (e.target.style.background = "#5B21B6")
                     }
                   >
-                    Contactame
+                    {lang === "en" ? "Contact me" : "Contactame"}
                   </button>
                   <button
                     onClick={() => {
@@ -520,7 +554,7 @@ function BudgetModal({ servicio, onClose }) {
                       (e.target.style.borderColor = "#1A1A2E")
                     }
                   >
-                    Recalcular
+                    {lang === "en" ? "Recalculate" : "Recalcular"}
                   </button>
                 </div>
               </motion.div>

@@ -1,14 +1,19 @@
+import { useLanguage } from "../context/languageContext";
+
 function Footer() {
+  const { t } = useLanguage();
+  const ft = t?.footer || {};
+
   const scrollTo = (href) => {
     document.getElementById(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
   const navLinks = [
-    { label: "Sobre mi", href: "about" },
-    { label: "Proyectos", href: "projects" },
-    { label: "Skills", href: "skills" },
-    { label: "Servicios", href: "services" },
-    { label: "Contacto", href: "contact" },
+    { label: t?.nav?.about || "Sobre mi", href: "about" },
+    { label: t?.nav?.projects || "Proyectos", href: "projects" },
+    { label: t?.nav?.skills || "Skills", href: "skills" },
+    { label: t?.nav?.services || "Servicios", href: "services" },
+    { label: t?.nav?.contact || "Contacto", href: "contact" },
   ];
 
   const contactLinks = [
@@ -37,8 +42,8 @@ function Footer() {
             Frontend Developer
           </p>
           <p className="text-xs leading-relaxed" style={{ color: "#3A3A5A" }}>
-            Diseno y desarrollo interfaces web y mobile modernas. Cordoba,
-            Argentina.
+            {ft.description ||
+              "Diseno y desarrollo interfaces web y mobile modernas. Cordoba, Argentina."}
           </p>
         </div>
 
@@ -47,13 +52,13 @@ function Footer() {
             className="text-xs uppercase tracking-widest mb-6"
             style={{ color: "#3A3A5A" }}
           >
-            Navegacion
+            {ft.nav || "Navegacion"}
           </p>
           <div className="flex flex-col gap-3">
             {navLinks.map(function (item) {
               return (
                 <button
-                  key={item.label}
+                  key={item.href}
                   onClick={function () {
                     scrollTo(item.href);
                   }}
@@ -78,7 +83,7 @@ function Footer() {
             className="text-xs uppercase tracking-widest mb-6"
             style={{ color: "#3A3A5A" }}
           >
-            Contacto
+            {ft.contact || "Contacto"}
           </p>
           <div className="flex flex-col gap-3 mb-8">
             {contactLinks.map(function (item) {
@@ -119,18 +124,18 @@ function Footer() {
               style={{ background: "#5B21B6", boxShadow: "0 0 8px #5B21B6" }}
             />
             <p className="text-xs" style={{ color: "#3A3A5A" }}>
-              Disponible para proyectos
+              {ft.available || "Disponible para proyectos"}
             </p>
           </div>
         </div>
       </div>
-
       <div
         style={{ borderTop: "1px solid #1A1A2E" }}
         className="py-6 text-center"
       >
         <p className="text-xs" style={{ color: "#2A2A3A" }}>
-          2026 Bruno Lopez Scidá - Todos los derechos reservados
+          {ft.rights ||
+            "2026 Bruno Lopez Scidá - Todos los derechos reservados"}
         </p>
       </div>
     </footer>

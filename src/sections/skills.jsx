@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useLanguage } from "../context/languageContext";
 import {
   SiReact,
   SiAngular,
@@ -77,12 +78,7 @@ const skills = [
   },
   { name: "Jira", category: "Herramientas", Icon: SiJira, color: "#0052CC" },
   { name: "Vite", category: "Herramientas", Icon: SiVite, color: "#646CFF" },
-  {
-    name: "XCode",
-    category: "Herramientas",
-    Icon: SiXcode,
-    color: "#007ACC",
-  },
+  { name: "XCode", category: "Herramientas", Icon: SiXcode, color: "#007ACC" },
 ];
 
 function SkillCard({ skill, index }) {
@@ -122,6 +118,9 @@ function SkillCard({ skill, index }) {
 }
 
 function Skills() {
+  const { t } = useLanguage();
+  const sk = t?.skills || {};
+
   return (
     <section
       id="skills"
@@ -142,24 +141,18 @@ function Skills() {
               className="text-xs tracking-[.4em] uppercase"
               style={{ color: "#A78BFA" }}
             >
-              Tecnologias
+              {sk.tag || "Tecnologias"}
             </p>
           </div>
           <h2
             className="font-serif text-5xl font-bold"
             style={{ color: "#F5F0E8" }}
           >
-            Habilidades
+            {sk.title || "Habilidades"}
           </h2>
         </motion.div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 190px)",
-            gap: 20,
-          }}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-items-center px-4 max-w-6xl mx-auto">
           {skills.map(function (skill, i) {
             return <SkillCard key={skill.name + i} skill={skill} index={i} />;
           })}
@@ -177,12 +170,12 @@ function Skills() {
             className="text-xs uppercase tracking-widest mb-5"
             style={{ color: "#6B6B7B" }}
           >
-            Idiomas
+            {sk.languages || "Idiomas"}
           </p>
           <div className="flex flex-wrap gap-3">
             {[
-              { name: "Espanol — Nativo" },
-              { name: "Ingles — C1 Advanced" },
+              { name: sk.spanish || "Espanol — Nativo" },
+              { name: sk.english || "Ingles — C1 Advanced" },
             ].map(function (item) {
               return (
                 <div

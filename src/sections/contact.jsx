@@ -2,12 +2,16 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import emailjs from "@emailjs/browser";
+import { useLanguage } from "../context/languageContext";
 
 const EMAILJS_SERVICE_ID = "service_hohkacq";
 const EMAILJS_TEMPLATE_ID = "template_qy0pb1r";
 const EMAILJS_PUBLIC_KEY = "IMVHmtuxHosf40S9E";
 
 function Contact() {
+  const { t, lang } = useLanguage();
+  const ct = t?.contact || {};
+
   const {
     register,
     handleSubmit,
@@ -21,38 +25,44 @@ function Contact() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
 
-  // ==================== ESCUCHAR DATOS DEL BUDGET MODAL ====================
   useEffect(() => {
     const handleBudget = (e) => {
       const { tipo, features, urgencia } = e.detail;
-
-      setValue("asunto", `Presupuesto: ${tipo}`);
-
-      let mensaje = `Hola Bruno,\n\nEstoy interesado en un proyecto de ${tipo}.\n\n`;
-
+      setValue(
+        "asunto",
+        lang === "en" ? `Quote: ${tipo}` : `Presupuesto: ${tipo}`,
+      );
+      let mensaje =
+        lang === "en"
+          ? `Hi Bruno,\n\nI'm interested in a project of ${tipo}.\n\n`
+          : `Hola Bruno,\n\nEstoy interesado en un proyecto de ${tipo}.\n\n`;
       if (features && features.length > 0) {
-        mensaje += `Funcionalidades que necesito:\n`;
+        mensaje +=
+          lang === "en"
+            ? `Features I need:\n`
+            : `Funcionalidades que necesito:\n`;
         features.forEach((f) => {
           mensaje += `• ${f}\n`;
         });
         mensaje += `\n`;
       }
-
-      mensaje += `Urgencia: ${urgencia}\n\n`;
-      mensaje += `¿Podrías enviarme un presupuesto personalizado? Muchas gracias!`;
-
+      mensaje +=
+        lang === "en"
+          ? `Urgency: ${urgencia}\n\n`
+          : `Urgencia: ${urgencia}\n\n`;
+      mensaje +=
+        lang === "en"
+          ? `Could you send me a customized quote? Thanks!`
+          : `Podrias enviarme un presupuesto personalizado? Muchas gracias!`;
       setValue("mensaje", mensaje);
     };
-
     window.addEventListener("budgetSelected", handleBudget);
     return () => window.removeEventListener("budgetSelected", handleBudget);
   }, [setValue]);
 
-  // ==================== ENVÍO CON EMAILJS ====================
   const onSubmit = async (data) => {
     setSending(true);
     setError(null);
-
     try {
       await emailjs.send(
         EMAILJS_SERVICE_ID,
@@ -69,7 +79,9 @@ function Contact() {
       reset();
     } catch (err) {
       console.error("EmailJS error:", err);
-      setError("Hubo un error al enviar el mensaje. Intentá de nuevo.");
+      setError(
+        ct.errorMsg || "Hubo un error al enviar el mensaje. Intenta de nuevo.",
+      );
     } finally {
       setSending(false);
     }
@@ -94,7 +106,7 @@ function Contact() {
     >
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* ====================== LADO IZQUIERDO ====================== */}
+          {/* LADO IZQUIERDO */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -107,38 +119,43 @@ function Contact() {
                 className="text-xs tracking-[.4em] uppercase"
                 style={{ color: "#A78BFA" }}
               >
-                Hablemos
+                {ct.tag || "Hablemos"}
               </p>
             </div>
             <h2
               className="font-serif text-5xl font-bold mb-6 leading-tight"
               style={{ color: "#F5F0E8" }}
             >
-              Tenés un proyecto
+              {ct.titleLine1 || "¿Tenes un proyecto"}
               <br />
-              <span style={{ color: "#5B21B6" }}>en mente?</span>
+              <span style={{ color: "#5B21B6" }}>
+                {ct.titleLine2 || "en mente?"}
+              </span>
             </h2>
             <p
               className="text-sm leading-relaxed mb-10"
               style={{ color: "#6B6B7B" }}
             >
-              Estoy disponible para proyectos freelance, colaboraciones y
-              oportunidades laborales. Contame tu idea y te respondo en menos de
-              24 horas.
+              {ct.subtitle ||
+                "Estoy disponible para proyectos freelance, colaboraciones y oportunidades laborales."}
             </p>
 
             <div className="flex flex-col gap-4">
               {[
                 {
                   icon: "✉",
-                  label: "Email",
+                  label: ct.emailLabel || "Email",
                   value: "brunolopezx.dev@gmail.com",
                 },
-                { icon: "◎", label: "Ubicación", value: "Córdoba, Argentina" },
+                {
+                  icon: "◎",
+                  label: ct.locationLabel || "Ubicacion",
+                  value: "Cordoba, Argentina",
+                },
                 {
                   icon: "◷",
-                  label: "Disponibilidad",
-                  value: "Lunes a Viernes · 9hs — 18hs",
+                  label: ct.availabilityLabel || "Disponibilidad",
+                  value: ct.availabilityValue || "Lunes a Viernes · 9hs - 18hs",
                 },
               ].map(({ icon, label, value }) => (
                 <div key={label} className="flex gap-4 items-start">
@@ -185,7 +202,7 @@ function Contact() {
             </div>
           </motion.div>
 
-          {/* ====================== FORMULARIO ====================== */}
+          {/* FORMULARIO */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -208,10 +225,10 @@ function Contact() {
                   className="font-serif text-3xl font-bold mb-3"
                   style={{ color: "#F5F0E8" }}
                 >
-                  ¡Mensaje enviado!
+                  {ct.successTitle || "Mensaje enviado!"}
                 </p>
                 <p className="text-sm" style={{ color: "#6B6B7B" }}>
-                  Te respondo en menos de 24 horas.
+                  {ct.successText || "Te respondo en menos de 24 horas."}
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
@@ -220,7 +237,7 @@ function Contact() {
                   onMouseEnter={(e) => (e.target.style.borderColor = "#5B21B6")}
                   onMouseLeave={(e) => (e.target.style.borderColor = "#1A1A2E")}
                 >
-                  Enviar otro mensaje
+                  {ct.another || "Enviar otro mensaje"}
                 </button>
               </motion.div>
             ) : (
@@ -235,11 +252,13 @@ function Contact() {
                       className="text-xs uppercase tracking-widest block mb-2"
                       style={{ color: "#3A3A5A" }}
                     >
-                      Nombre
+                      {ct.name || "Nombre"}
                     </label>
                     <input
-                      {...register("nombre", { required: "Requerido" })}
-                      placeholder="Tu nombre"
+                      {...register("nombre", {
+                        required: ct.required || "Requerido",
+                      })}
+                      placeholder={ct.namePlaceholder || "Tu nombre"}
                       style={inputStyle(errors.nombre)}
                       onFocus={(e) => (e.target.style.borderColor = "#5B21B6")}
                       onBlur={(e) =>
@@ -254,23 +273,22 @@ function Contact() {
                       </p>
                     )}
                   </div>
-
                   <div>
                     <label
                       className="text-xs uppercase tracking-widest block mb-2"
                       style={{ color: "#3A3A5A" }}
                     >
-                      Email
+                      {ct.email || "Email"}
                     </label>
                     <input
                       {...register("email", {
-                        required: "Requerido",
+                        required: ct.required || "Requerido",
                         pattern: {
                           value: /\S+@\S+\.\S+/,
-                          message: "Email inválido",
+                          message: ct.invalidEmail || "Email invalido",
                         },
                       })}
-                      placeholder="tu@email.com"
+                      placeholder={ct.emailPlaceholder || "tu@email.com"}
                       style={inputStyle(errors.email)}
                       onFocus={(e) => (e.target.style.borderColor = "#5B21B6")}
                       onBlur={(e) =>
@@ -292,11 +310,15 @@ function Contact() {
                     className="text-xs uppercase tracking-widest block mb-2"
                     style={{ color: "#3A3A5A" }}
                   >
-                    Asunto
+                    {ct.subject || "Asunto"}
                   </label>
                   <input
-                    {...register("asunto", { required: "Requerido" })}
-                    placeholder="¿En qué puedo ayudarte?"
+                    {...register("asunto", {
+                      required: ct.required || "Requerido",
+                    })}
+                    placeholder={
+                      ct.subjectPlaceholder || "En que puedo ayudarte?"
+                    }
                     style={inputStyle(errors.asunto)}
                     onFocus={(e) => (e.target.style.borderColor = "#5B21B6")}
                     onBlur={(e) =>
@@ -317,11 +339,15 @@ function Contact() {
                     className="text-xs uppercase tracking-widest block mb-2"
                     style={{ color: "#3A3A5A" }}
                   >
-                    Mensaje
+                    {ct.message || "Mensaje"}
                   </label>
                   <textarea
-                    {...register("mensaje", { required: "Requerido" })}
-                    placeholder="Contame sobre tu proyecto..."
+                    {...register("mensaje", {
+                      required: ct.required || "Requerido",
+                    })}
+                    placeholder={
+                      ct.messagePlaceholder || "Contame sobre tu proyecto..."
+                    }
                     rows={8}
                     style={{
                       ...inputStyle(errors.mensaje),
@@ -341,7 +367,6 @@ function Contact() {
                   )}
                 </div>
 
-                {/* Error de envío */}
                 {error && (
                   <p
                     className="text-xs text-center py-2 px-4"
@@ -372,7 +397,9 @@ function Contact() {
                     if (!sending) e.target.style.background = "#5B21B6";
                   }}
                 >
-                  {sending ? "Enviando..." : "Enviar mensaje"}
+                  {sending
+                    ? ct.sending || "Enviando..."
+                    : ct.send || "Enviar mensaje"}
                 </button>
               </form>
             )}
